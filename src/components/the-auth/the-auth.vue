@@ -26,29 +26,34 @@
   </div>
 </template>
 
-<script>
-import {reactive, ref, watch} from "vue"
+<script lang="ts">
+import {ref, watch} from "vue"
 import useVuelidate from '@vuelidate/core'
 import rules from './validator'
 import UiContainer from "../ui/ui-container.vue"
 import UiInputField from "../ui/ui-input-field.vue"
 import UiButton from "../ui/ui-button.vue"
+import {useAuth} from "../../stores/auth";
 
 export default {
   name: "TheAuth",
   components: {UiButton, UiContainer, UiInputField},
   setup() {
-    const state = reactive({ email: '', password: '' })
-    const errorMessage = ref('')
-    const pending = ref(false)
+    const state = useAuth();
+    const errorMessage = ref<string>('')
+    const pending = ref<Boolean>(false)
     const $externalResults = ref({})
 
     const v$ = useVuelidate(rules, state, { $externalResults })
 
-    const doAsyncStuff = async function () {
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(false), 1000)
-      })
+    const doLogin = async function () {
+      const result = await state.login()
+      if (result.token) {
+        state.setToken(result.token)
+        return true
+      }
+
+      return false
     }
 
     const submitForm = async function () {
@@ -58,22 +63,19 @@ export default {
         pending.value = false
         return
       }
-      const success = await doAsyncStuff()
+      const success = await doLogin()
       const serverErrors =  success ? [] : ['Неверный Email или Пароль']
       pending.value = false
 
-      $externalResults.value = {
-        email: serverErrors,
-        password: serverErrors,
-      }
+      $externalResults.value = { email: serverErrors, password: serverErrors }
     }
 
     watch(() => v$, (error) => {
       const firstError = error.value.$errors[0]
-      errorMessage.value = firstError && firstError.$message
+      errorMessage.value = firstError ? String(firstError.$message) : ''
     }, { deep: true })
 
-    return { state, v$, submitForm, errorMessage, pending }
+    return { state: state, v$, submitForm, errorMessage, pending }
   }
 }
 </script>

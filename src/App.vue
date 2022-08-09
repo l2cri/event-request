@@ -1,16 +1,17 @@
 <script setup lang="ts">
+import { useAuth } from './stores/auth'
 
+import {computed} from "vue";
 import TheAuth from "./components/the-auth/the-auth.vue"
 import TheDashboard from "./components/the-dashboard/the-dashboard.vue"
-import {ref} from "vue";
 
-const isAuth = ref(false)
+const isAuth = computed(() => useAuth().isAuth)
 </script>
 
 <template>
   <div class="root-app">
-    <the-auth v-if="isAuth" />
-    <the-dashboard v-else />
+    <the-dashboard v-if="isAuth" />
+    <the-auth v-else />
   </div>
 </template>
 
