@@ -1,5 +1,5 @@
 <template>
-  <div class="er-container">
+  <div class="ui-container">
     <slot />
   </div>
 </template>
@@ -11,9 +11,10 @@ export default {
 </script>
 
 <style scoped>
-  .er-container {
+  .ui-container {
     background: #ffffff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    padding: 19px;
   }
  </style>

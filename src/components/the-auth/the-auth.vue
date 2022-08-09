@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="the-auth">
     <h1>MyApp</h1>
     <ui-container>
       АВТОРИЗАЦИЯ
@@ -79,5 +79,11 @@ export default {
 </script>
 
 <style scoped>
-
+  .the-auth {
+    width: 585px;
+    margin: 0 auto;
+  }
+  .the-auth h1 {
+    text-align: center;
+  }
 </style>
